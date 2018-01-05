@@ -4,14 +4,30 @@
   "license": "MIT",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve",
+    "start": "npm run start:base -- --proxy-config proxy.conf.js",
     "build": "ng build --prod",
     "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "lint": "ng lint && sass-lint -q -v",
+    "e2e": "ng e2e",
+    "start:base": "ng serve --port=4380",
+    "start:mock": "npm run start:base -- --environment=mock",
+    "start:dev": "npm run start:base -- --proxy-config proxy-external.conf.js",
+    "build:app": "npm run build -- --target=production --progress=false",
+    "build:dev": "npm run build -- --target=development --aot=true --progress=false --output-hashing=all",
+    "ci": "npm run lint && npm run coverage -- --browsers=PhantomJS --colors=false",
+    "preci": "npm install",
+    "postci": "npm run build:app",
+    "coverage": "ng test --code-coverage --single-run --progress=false",
+    "postcoverage": "lcov-summary coverage/lcov.info"
   },
   "private": true,
   "dependencies": {
+    "@ngrx/store": "^4.1.1",
+    "@ngrx/router-store": "^4.1.1",
+    "@ngrx/effects": "^4.1.1",
+    "@ngrx/entity": "^4.1.1",
+    "@ngrx/store-devtools": "^4.1.1",
+    "classlist.js": "^1.1.20150312",
     "@angular/animations": "^5.0.0",
     "@angular/common": "^5.0.0",
     "@angular/compiler": "^5.0.0",
@@ -26,9 +42,18 @@
     "zone.js": "^0.8.14"
   },
   "devDependencies": {
+    "angular2-template-loader": "^0.6.2",
+    "jasmine-marbles": "^0.2.0",
+    "json": "^9.0.6",
+    "karma-phantomjs-launcher": "^1.0.4",
+    "lcov-summary": "^1.0.1",
+    "ngrx-store-freeze": "^0.2.0",
+    "sass-lint": "^1.12.1",
+    "wallaby-webpack": "0.0.45",
     "@angular/cli": "1.6.3",
     "@angular/compiler-cli": "^5.0.0",
     "@angular/language-service": "^5.0.0",
+    "@decerto/schematics": "0.0.1",
     "@types/jasmine": "~2.5.53",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
@@ -45,5 +70,9 @@
     "ts-node": "~3.2.0",
     "tslint": "~5.7.0",
     "typescript": "~2.4.2"
-  }
+  },
+  "publishConfig": {
+    "registry": "https://nexus.decerto.pl/content/repositories/npm_releases/"
+  },
+  "sasslintConfig": ".sass-lint.yml"
 }
