@@ -1,4 +1,6 @@
 import {Component, OnInit} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {CounterService} from './counter.redux';
 import {XkcdRngService} from './xkcd-rng.service';
 
 @Component({
@@ -9,11 +11,19 @@ import {XkcdRngService} from './xkcd-rng.service';
 export class AppComponent implements OnInit {
   counter: number;
 
-  constructor(public xkcd: XkcdRngService) {
+  value$: Observable<number>;
+
+  constructor(public xkcd: XkcdRngService,
+              private cs: CounterService) {
+    this.value$ = cs.selectMainCounterValue();
   }
 
   ngOnInit(): void {
     this.counter = this.xkcd.next().value;
+  }
+
+  start() {
+    this.cs.start();
   }
 }
 
